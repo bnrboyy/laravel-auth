@@ -40,12 +40,15 @@ class UserController extends Controller
 
     public function onLogin(Request $req) {
         try {
-            $email = $req->email;
-            $password = $req->password;
-
-            $auth = Auth::attempt(['email' => $email, 'password' => $password]); // true or false
-            // dd($auth);
-            if($auth) {
+            $data = [
+                'email' => $req->email,
+                'password' => $req->password
+            ];
+           
+            // $credentials = request($data)->only(['email', 'password']);
+            // dd($credentials);
+            
+            if(auth()->validate($data)) {
                 return response([
                     'message' => 'ok',
                     'description' => 'Login Success',
@@ -55,7 +58,7 @@ class UserController extends Controller
                     'message' => 'error',
                     'description' => 'Login Error'
                 ], 401);
-            }
+            }  
 
         } catch (Exception $e) {
             return response([

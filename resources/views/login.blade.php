@@ -68,10 +68,10 @@
             if(response.data.message == "ok") {
                 console.log('yes')
                 alert("sign in success")
-                location.href = "/landing"
+                // location.href = "/landing"
             } else {
                 alert("email or password is incorrect")
-                location.reload()
+                // location.reload()
             }
         
         }

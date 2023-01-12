@@ -19,9 +19,16 @@ Route::get('/', function () {
 
 Route::get('/login', function () {
     return view('login');
-});
+})->name('login');
 
-Route::get('/landing', function () {
-    return view('landing');
-});
+// Route::get('/landing', function () {
+//     return view('landing');
+// });
 
+
+
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::get('/landing', function () {
+        return view('landing');
+    });
+});
