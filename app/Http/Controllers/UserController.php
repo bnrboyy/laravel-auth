@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
+
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Http;
+
+use stdClass; 
+
 class UserController extends Controller
 {
     public function onRegister(Request $req) {
@@ -15,21 +23,11 @@ class UserController extends Controller
             $createUser = new User();
             $createUser->email = $req->email;
             $createUser->password = Hash::make($req->password);
-            $result = $createUser->save();
-
-            if($result) {
-                // dd($result);
-                return response([
-                    'message' => 'ok',
-                    'description' => 'Create User Success',
-                ], 201);
-            } else {
-                return response([
-                    'message' => 'error',
-                    'description' => 'Create User Error'
-                ], 401);
-            }
-        
+            $createUser->save();
+            return response([
+                'message' => 'ok',
+                'description' => 'Create User Success',
+            ], 201);
         } catch (Exception $e) {
             return response([
                 'message' => 'server error',
@@ -44,15 +42,25 @@ class UserController extends Controller
                 'email' => $req->email,
                 'password' => $req->password
             ];
-           
-            // $credentials = request($data)->only(['email', 'password']);
-            // dd($credentials);
-            
-            if(auth()->validate($data)) {
+
+            if(Auth::attempt($data)) {
+                $user = Auth::user();
+                $user->tokens()->delete();
+                $user->createToken($data['email'], ['admin', 'user']);
+
+    
+
+                // $user = User::where('email', $data['email'])->first();
+                // $member = Auth::user();
+                // $token = urlencode($member->createToken($member->email.time())->plainTextToken);
+                // dd($token);
+                // $cookie = cookie('jwt', $token, 60);
                 return response([
                     'message' => 'ok',
                     'description' => 'Login Success',
-                ], 200);
+                    'data' => Auth::user()
+                ]);
+
             } else {
                 return response([
                     'message' => 'error',
@@ -66,10 +74,8 @@ class UserController extends Controller
                 "description" => "Something went wrong.",
                 "errorMessage" => $e
             ], 500);
-
         }
     }
-
     public function onLogout() {
         try {
             Auth::logout(); // logout user
@@ -77,7 +83,8 @@ class UserController extends Controller
             if(!Auth::check()) {
                 return response([
                     'message' => 'ok',
-                    'description' => 'Logout Success.'
+                    'description' => 'Logout Success.',
+                    'data' => Auth::user()
                 ], 200);
             } else {
                 return response([
@@ -92,4 +99,5 @@ class UserController extends Controller
             ]);
         }
     }
+
 }

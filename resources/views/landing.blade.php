@@ -12,28 +12,69 @@
 
     <style>
         .container {
-            /* border: 1px solid red; */
-        }
-
+            width: 100%;
+            height: 300px;
+            border: 1px solid red;
+        }     
         #btn2 {
             margin-left: 10px;
+        }
+        .section  {
+            width: 100%;
+            height: 300px;
+            border: 1px solid red;
+            margin-top: 5rem;
+            
+        }       
+        .section h1 {
+            text-align: center;
+        }       
+        .section .box-container {
+            display: flex;
+            align-content: center;
+            justify-content: center;
+            
+        }
+        .section .box-container .box-admin {
+            width: 50%;
+            /* height: 100%; */
+            border: 1px solid red;
+        }
+        .section .box-container .box-user {
+            width: 50%;
+            /* height: 90%; */
+            border: 1px solid red;
         }
     </style>
 </head>
 <body>
 
     <div class="container" style="margin-top: 30px;">
-        <button class="btn btn-primary float-start " id="btn1">Admin</button>
-        <button class="btn btn-success float-start " id="btn2">User</button>
+        <button class="btn btn-primary float-start " id="btn1" onclick="oneClickBtn()">Admin</button>
+        <button class="btn btn-success float-start " id="btn2" onclick="oneClickBtn()">User</button>
         <button class="btn btn-warning float-end " id="btn3" onclick="onLogout()">Logout</button>
     </div>
     
-    <section>
+    <section class="section">
+        <h1>This is Landing Page</h1>
+        <div class="box-container">
+            @if(Auth::user()->id == '1') 
 
+            <div class="admin">
+                admin
+            </div> 
+            @endif
+            
+            @if(Auth::user()->id == '1' || Auth::user()->id == '2') 
+            <div>
+                user
+            </div>
+            @endif
+
+        </div>
     </section>
-
-
-
+    
+    
     <script>
         async function onLogout() {
             const response = await axios({
@@ -44,12 +85,50 @@
             if(response.data.message == "ok") {
                 // console.log('yes')
                 alert("Logout success")
-                location.href = "/"
+                location.href = "/login"
             } else {
                 alert("Error")
                 location.reload()
             }
         }
-    </script>
+
+        function onClick() {
+            const data = document.querySelector('.box-container')
+            let html = `<h1>This is content</h1>`
+            data.insertAdjacentHTML('afterbegin', html)
+        }
+
+        function oneClickBtn() {
+            // (A) DISABLE THE BUTTON
+            let adminBtn = document.getElementById("btn1");
+            let userBtn = document.getElementById("btn2");
+
+            if(adminBtn.disabled == false ) {
+                adminBtn.disabled = true
+                userBtn.disabled = false
+            } else {
+                adminBtn.disabled = false
+                userBtn.disabled = true
+                // userBtn.disabled == true
+            }
+
+          
+
+            // if(userBtn.disabled == false) {
+            //     userBtn.disabled == true
+            // } else {
+            //     adminBtn.disabled == false
+                
+            // }
+                
+
+            // (B) DO YOUR PROCESSING HERE
+          
+
+            // (C) RE-ENABLE AFTER PROCESSING IF YOU WANT
+            // document.getElementById("myButton").disabled = false;
+        }       
+       
+        </script>
 </body>
 </html>

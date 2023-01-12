@@ -1,3 +1,4 @@
+ 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,6 +25,7 @@
 <body>
     <div class="container" style="width: 30%;">
         <h1>Login</h1>
+
         <form>
             <!-- Email input -->
             <div class="form-outline mb-4">
@@ -40,7 +42,7 @@
             <!-- Submit button -->
             <button type="button" class="btn btn-primary btn-block mb-4" onclick="onLogin()">Login</button>
             
-            <a href="/"><button type="button" class="btn btn-outline-primary btn-block mb-4">Register</button></a>
+            <a href="/register"><button type="button" class="btn btn-outline-primary btn-block mb-4">Register</button></a>
           
             </div>
           </form>
@@ -66,12 +68,11 @@
                 data: data
             })
             if(response.data.message == "ok") {
-                console.log('yes')
-                alert("sign in success")
-                // location.href = "/landing"
+                location.href = "/landing"
+                // alert("login success")
             } else {
-                alert("email or password is incorrect")
-                // location.reload()
+                location.reload()
+                // alert("email or password is incorrect")
             }
         
         }

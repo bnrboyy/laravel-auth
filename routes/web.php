@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+
+namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Route; 
 
 /*
 |--------------------------------------------------------------------------
@@ -13,18 +15,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+
+
+Route::get('/landing', function () {
+    return view('landing');
+});
+
+
+Route::get('/register', function () {
     return view('register');
 });
+
 
 Route::get('/login', function () {
     return view('login');
 })->name('login');
-
-// Route::get('/landing', function () {
-//     return view('landing');
-// });
-
 
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -32,3 +37,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         return view('landing');
     });
 });
+
+Route::get('/', [Controller::class, 'index']);
+
+
+Route::post('/api/auth/register', [UserController::class, 'onRegister']);
+Route::post('/api/auth/login', [UserController::class, 'onLogin']);
+Route::get('/api/auth/logout', [UserController::class, 'onLogout']);

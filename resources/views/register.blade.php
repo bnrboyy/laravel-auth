@@ -74,7 +74,7 @@
                 data: data
             }).then(() => {
                 alert('Created !!!')
-                // location.reload()
+                location.href = "/login"
             }).catch(error => {
                 alert('Error')
             })
