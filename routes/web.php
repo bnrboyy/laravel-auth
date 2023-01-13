@@ -32,7 +32,7 @@ Route::get('/login', function () {
 })->name('login');
 
 
-Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::group(['middleware' => 'auth:sanctum'], function () { //ต้อง Login ก่อนถึงจะมีสิทธิ์เขาถึง route ได้
     Route::get('/landing', function () {
         return view('landing');
     });

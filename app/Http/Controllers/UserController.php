@@ -13,14 +13,29 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Http;
-
-use stdClass; 
+use Illuminate\Support\Facades\Validator;
+use stdClass;
 
 class UserController extends Controller
 {
-    public function onRegister(Request $req) {
-        try {
-            $createUser = new User();
+    public function onRegister(Request $req)
+    {
+        $validator = Validator::make($req->all(), [   //data validation
+            'email' => 'required|email|unique:users',
+            'password' => 'required'
+        ]);
+
+        // dd($validator->errors());
+        if ($validator->fails()) {
+            return response([
+                'message' => 'error',
+                'errorMessage' => $validator->errors()
+            ]);
+        }
+        // dd($req);
+
+        $createUser = new User();
+        if ($createUser) {
             $createUser->email = $req->email;
             $createUser->password = Hash::make($req->password);
             $createUser->save();
@@ -28,15 +43,16 @@ class UserController extends Controller
                 'message' => 'ok',
                 'description' => 'Create User Success',
             ], 201);
-        } catch (Exception $e) {
+        } else {
             return response([
-                'message' => 'server error',
-                'description' => $e
-            ], 500);
+                'message' => 'error',
+                'description' => 'Register Error'
+            ], 400);
         }
     }
 
-    public function onGetAdminData() {
+    public function onGetAdminData()
+    {
         try {
             $user = User::where("email", Auth::user()->email)->first();
             $user->name = "admin";
@@ -46,7 +62,6 @@ class UserController extends Controller
                 'message' => 'ok',
                 'description' => 'get admin data success'
             ], 200);
-            
         } catch (Exception $e) {
             return response([
                 'message' => 'server error',
@@ -54,7 +69,8 @@ class UserController extends Controller
             ], 500);
         }
     }
-    public function onGetUserData() {
+    public function onGetUserData()
+    {
         try {
             $user = User::where("email", Auth::user()->email)->first();
             $user->name = "user";
@@ -64,7 +80,6 @@ class UserController extends Controller
                 'message' => 'ok',
                 'description' => 'get user data success'
             ], 200);
-            
         } catch (Exception $e) {
             return response([
                 'message' => 'server error',
@@ -73,17 +88,18 @@ class UserController extends Controller
         }
     }
 
-    public function onLogin(Request $req) {
+    public function onLogin(Request $req)
+    {
         try {
             $data = [
                 'email' => $req->email,
                 'password' => $req->password
             ];
 
-            if(Auth::attempt($data)) {
+            if (Auth::attempt($data)) {
                 $user = Auth::user();
                 $user->tokens()->delete();
-                $user->createToken($data['email'], ['admin', 'user']); // add Abilities => admin and user
+                $user->createToken($data['email'], ['admin']); // add Abilities => admin and user
 
                 // $user = User::where('email', $data['email'])->first();
                 // $member = Auth::user();
@@ -96,14 +112,12 @@ class UserController extends Controller
                     'description' => 'Login Success',
                     'data' => Auth::user()
                 ]);
-
             } else {
                 return response([
                     'message' => 'error',
                     'description' => 'Login Error'
                 ], 401);
-            }  
-
+            }
         } catch (Exception $e) {
             return response([
                 "message" => "error",
@@ -112,11 +126,12 @@ class UserController extends Controller
             ], 500);
         }
     }
-    public function onLogout() {
+    public function onLogout()
+    {
         try {
             Auth::logout(); // logout user
-            
-            if(!Auth::check()) {
+
+            if (!Auth::check()) {
                 return response([
                     'message' => 'ok',
                     'description' => 'Logout Success.',
@@ -135,5 +150,4 @@ class UserController extends Controller
             ]);
         }
     }
-
 }
