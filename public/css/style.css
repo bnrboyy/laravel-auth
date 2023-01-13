@@ -1,0 +1,34 @@
+.container {
+    width: 100%;
+    height: 300px;
+    border: 1px solid red;
+}     
+#btn2 {
+    margin-left: 10px;
+}
+.section  {
+    width: 100%;
+    height: 300px;
+    border: 1px solid red;
+    margin-top: 5rem;
+    
+}       
+.section h1 {
+    text-align: center;
+}       
+.section .box-container {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    
+}
+.section .box-container .box-admin {
+    width: 50%;
+    /* height: 100%; */
+    border: 1px solid red;
+}
+.section .box-container .box-user {
+    width: 50%;
+    /* height: 90%; */
+    border: 1px solid red;
+}

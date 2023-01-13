@@ -36,6 +36,43 @@ class UserController extends Controller
         }
     }
 
+    public function onGetAdminData() {
+        try {
+            $user = User::where("email", Auth::user()->email)->first();
+            $user->name = "admin";
+            $user->save();
+
+            return response([
+                'message' => 'ok',
+                'description' => 'get admin data success'
+            ], 200);
+            
+        } catch (Exception $e) {
+            return response([
+                'message' => 'server error',
+                'errorMessage' => $e
+            ], 500);
+        }
+    }
+    public function onGetUserData() {
+        try {
+            $user = User::where("email", Auth::user()->email)->first();
+            $user->name = "user";
+            $user->save();
+
+            return response([
+                'message' => 'ok',
+                'description' => 'get user data success'
+            ], 200);
+            
+        } catch (Exception $e) {
+            return response([
+                'message' => 'server error',
+                'errorMessage' => $e
+            ], 500);
+        }
+    }
+
     public function onLogin(Request $req) {
         try {
             $data = [
@@ -46,15 +83,14 @@ class UserController extends Controller
             if(Auth::attempt($data)) {
                 $user = Auth::user();
                 $user->tokens()->delete();
-                $user->createToken($data['email'], ['admin', 'user']);
-
-    
+                $user->createToken($data['email'], ['admin', 'user']); // add Abilities => admin and user
 
                 // $user = User::where('email', $data['email'])->first();
                 // $member = Auth::user();
                 // $token = urlencode($member->createToken($member->email.time())->plainTextToken);
                 // dd($token);
                 // $cookie = cookie('jwt', $token, 60);
+
                 return response([
                     'message' => 'ok',
                     'description' => 'Login Success',

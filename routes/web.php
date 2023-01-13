@@ -44,3 +44,6 @@ Route::get('/', [Controller::class, 'index']);
 Route::post('/api/auth/register', [UserController::class, 'onRegister']);
 Route::post('/api/auth/login', [UserController::class, 'onLogin']);
 Route::get('/api/auth/logout', [UserController::class, 'onLogout']);
+
+Route::get('/api/auth/adminData', [UserController::class, 'onGetAdminData']);
+Route::get('/api/auth/userData', [UserController::class, 'onGetUserData']);
